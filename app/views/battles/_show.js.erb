@@ -1,0 +1,46 @@
+function update_table(table, data){
+  table.empty();
+  data.sort(function(a, b){return ((a.score<b.score)?-1:(a.score>b.score)?1:0)}).reverse();
+  for (var i in data) {
+    var row = $("<tr></tr>").appendTo(table);
+    $("<td></td>").appendTo(row).text(+i+1);
+    $("<font color=\""+data[i].color+"\"></font>").appendTo($("<td></td>").appendTo(row)).text(data[i].name);
+    $("<td></td>").appendTo(row).text(data[i].score);
+    if ("avg_score" in data[i]) {
+      $("<td></td>").appendTo(row).text(data[i].avg_score);
+    }
+  }
+}
+
+function update_person(data) {
+  update_table($("tbody#person_raiting"), data);
+}
+
+function update_team(data){
+  update_table($("tbody#team_raiting"), data);
+}
+
+function update_all() {
+  $.post("<%=battle_person_raiting_path(battle)%>", function(data){
+    if (data.battle_stop) {
+      $("#score_table").powerTimer("stop");
+    }
+    update_person(data.raitings);
+  });
+  $.post("<%=battle_team_raiting_path(battle)%>", function(data){
+    if (data.battle_stop) {
+      $("#score_table").powerTimer("stop");
+    }
+    update_team(data.raitings);
+  });
+}
+
+$(function(){
+  update_all();
+
+  var my_t = $("#score_table");
+  my_t.powerTimer({
+    sleep: 30000,
+    func: update_all
+  });
+});

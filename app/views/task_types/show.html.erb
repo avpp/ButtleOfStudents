@@ -1,0 +1,6 @@
+<h3>Тип задания: <%=@task_type.name%></h3>
+<p><%=link_to "К списку заданий", root_path, :class=>"btn btn-default"%></p>
+
+<p><%=link_to "Редактировать", edit_task_type_path(@task_type), :class=>"btn btn-warning"%></p>
+
+<%=render :partial=>"task_types/show.html.erb", :locals=>{:task_type=>@task_type} %>

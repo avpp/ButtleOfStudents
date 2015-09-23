@@ -1,0 +1,33 @@
+function addVariableTo(element, name, variable) {
+  element = $(element);
+  variable = variable || {"":""};
+  var row = $("<tr></tr>").appendTo(element);
+  var n_i = $("<input type=\"text\" required></input>").appendTo($("<td></td>").appendTo(row));
+  var v_i = $("<input type=\"text\" required></input>").appendTo($("<td></td>").appendTo(row));
+  var del_btn = $("<a class=\"btn btn-danger btn-xs\"></a>").appendTo($("<td></td>").appendTo(row));
+  $("<span class=\"glyphicon glyphicon-remove\"></span>").appendTo(del_btn);
+  del_btn.click(function(){
+    $(this).parent().parent().remove();
+  });
+  v_i.data("name", name);
+  n_i.change(function(){
+    var val_input = $($(this).parent().next().find("input"));
+    val_input.attr("name", val_input.data("name")+"["+$(this).val()+"]");
+  });
+  n_i.val(Object.keys(variable)[0]);
+  n_i.change();
+  v_i.val(variable[Object.keys(variable)[0]]);
+}
+function init_vars_input(element, name, vars){
+  element = $(element);
+  element.empty();
+  var tb = $("<tbody></tbody>").appendTo($("<table></table>").appendTo(element));
+  $("<a data-name=\""+name+"\" class=\"btn btn-success\">Добавть переменную</a>").appendTo(element).click(function(){
+    addVariableTo($(this).parent().find("tbody"), name);
+  });
+  for (var i in vars) {
+    var v = {};
+    v[i] = vars[i];
+    addVariableTo(tb, name, v);
+  }
+}

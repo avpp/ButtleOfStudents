@@ -1,0 +1,16 @@
+<table>
+  <thead>
+    <tr>
+      <th>Навание</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% task_types.each do |tt|%>
+      <tr>
+        <td><%=tt.name%></td>
+        <td><%= link_to "Открыть", task_type_path(tt), :class=>"btn btn-info"%></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

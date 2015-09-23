@@ -1,0 +1,25 @@
+<h3>Команда <%=@team.name%></h3>
+<h4>Заработанные очки: <%=@team.score%></h4>
+<p>Список участников:</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th>ФИО</th>
+      <th>Количество очков</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @team.students.each do |s| %>
+      <tr>
+         <td><%=s.fio%></td>
+         <td><%=s.score(@team.battle)%></td>
+         <td>
+           <% if signed_in? and current_user.has_role?(:teacher)%>
+             <%= link_to "Убрать из команды", battle_team_unassign_path(@team.battle, @team, :student=>s), :method=>:delete, :class=>"btn btn-warning", :data=>{:confirm=>"Вы уверены, что хотите убрать игрока из команды?"}%>
+           <% end %>
+         </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,46 @@
+<h2>Вы присоединились к битве <%=@battle.name%></h2>
+
+<p>
+  <label>Задания для квалификации:</label><br>
+  <ul>
+    <% current_user.tasks.where(:battle_id=>@battle.id).each do |qt| %>
+      <li>
+        <p>
+        <%= form_tag answer_task_path(qt), :id=>"q_"+qt.id.to_s, :method=>:post, :remote=>true do%>
+          <%=raw qt.html%>
+          <%= submit_tag "Отправить", :class=>"btn btn-default"%>
+        <% end %>
+        <%= javascript_tag do%>
+          $(document).ready(function(){
+            var q_form = $("#q_<%=qt.id.to_s%>");
+            <% if not qt.answers.where(:user_id=>current_user.id).first.nil? %>
+              q_form.find("input:text").val("<%="Answer"%>");
+              q_form.children().last().prop("disabled", true);
+            <% end %>
+            q_form.bind("ajax:success", function(xhr, data, status) {
+              var q_form = $("#q_<%=qt.id.to_s%>");
+              q_form.find("span.glyphicon").remove();
+              if (data.success){
+                var btn = q_form.children().last()
+                $("<span class=\"glyphicon glyphicon-ok text-success\"></span>").insertBefore(btn);
+                btn.prop("disabled", true);
+                if (data.error) {
+                  alert(data.error);
+                }
+                if (data.end_qualify) {
+                  location.reload();
+                }
+              } else {
+                $("<span class=\"glyphicon glyphicon-remove text-danger\"></span>").insertBefore(q_form.children().last());
+                if (data.error) {
+                  alert(data.error);
+                }
+              }
+            });
+          });
+        <% end %>
+        </p>
+      </li>
+    <% end %>
+  </ul>
+</p>

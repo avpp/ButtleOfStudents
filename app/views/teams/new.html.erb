@@ -1,0 +1,17 @@
+<%= form_for [@battle, @team] do |f|%>
+  <p>
+    <%= f.label "Название команды" %><br>
+    <%= f.text_field :name, :required=>true %>
+  </p>
+  <p>
+    <%= f.label "Максимальное количество участников" %><br>
+    <%= f.number_field :max_stud, :value=>4 %>
+  </p>
+  <p>
+    <%= f.label "Цвет команды" %><br>
+    <%= f.color_field :color %>
+  </p>
+  <p>
+    <%= f.submit "Создать", :class=>"btn btn-success" %>
+  </p>
+<% end %>

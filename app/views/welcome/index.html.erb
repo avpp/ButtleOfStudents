@@ -1,0 +1,3 @@
+<h1>Добро пожаловать на битву студентов!</h1>
+<label>Список идущих битв:</label>
+<%=render :partial=>'battles/index.html.erb', :locals=>{:battles=>Battle.where(:end_time=>nil)} %>

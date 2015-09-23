@@ -1,0 +1,4 @@
+<%=render :partial=>"task_types/vars_input.js.erb"%>
+<%=render :partial=>"task_types/levels_input.js.erb"%>
+init_vars_input("div#global_vars", "task_type[config][vars]", <%= raw task_type.config["vars"].to_json %>);
+init_levels("div#levels", "task_type[config][levels]", <%= raw task_type.config["levels"].to_json %>);

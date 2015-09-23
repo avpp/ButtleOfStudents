@@ -1,0 +1,21 @@
+<h3><font color="<%=@team.color%>">Командная битва</font></h3>
+<p><%= link_to "Текущее состояние", battle_path(@battle), :class=>"btn btn-info", :data=>{"no-turbolink"=>true}%></p>
+<p>Список доступных заданий:</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Команда</th>
+      <th>Задание</th>
+      <th>Уровень сложности</th>
+      <th>Очки за решение</th>
+      <th>Очки в команду</th>
+      <th>Решившие:</th>
+    </tr>
+  </thead>
+  <tbody id="available_task_list">
+  </tbody>
+</table>
+
+<%= javascript_tag do %>
+  <%=render :partial=>'tasks.js.erb', :locals=>{:user=>@user, :battle=>@battle}%>
+<% end %>

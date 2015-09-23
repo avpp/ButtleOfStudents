@@ -1,0 +1,35 @@
+<h3>Битва <%=@battle.name%></h3>
+<% if current_user == @battle.owner %>
+  <p>
+    <%=link_to "Управление битвой", battle_manage_path(@battle), :class=>"btn btn-warning", :data=>{"no-turbolink"=>true}%>
+  </p>
+<% end %>
+
+<table id="score_table" width="100%">
+  <tr>
+    <td>
+      <h4>Рейтинг участников</h4>
+    </td>
+    <td>
+      <h4>Рейтинг команд</h4>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" style="vertical-align: top">
+      <table class="table">
+        <tbody id="person_raiting">
+        </tbody>
+      </table>
+    </td>
+    <td width="50%" style="vertical-align: top">
+      <table class="table">
+        <tbody id="team_raiting">
+        </tbody>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<%= javascript_tag do %>
+  <%= render :partial=>"battles/show.js.erb", :locals=>{:battle=>@battle} %>
+<% end %>

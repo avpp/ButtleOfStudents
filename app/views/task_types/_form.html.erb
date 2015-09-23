@@ -1,0 +1,30 @@
+<%= form_for task_type do |f| %>
+  <p>
+    <%=f.label "Название:"%><br>
+    <%=f.text_field :name, :size=>150, :required=>true%>
+  </p>
+  <p>
+    <%=f.label "Текст:"%><br>
+    <%=f.text_field :text, :size=>150, :required=>true%><br>
+  </p>
+  <p>
+    <%=label_tag "Ответ:"%><br>
+    <%=text_field_tag "task_type[config][answer]", task_type.config["answer"], :size=>150, :required=>true%><br>
+  </p>
+  <p>
+    <%=label_tag "Глобалные переменные:"%><br>
+    <div id="global_vars">
+    </div>
+  </p>
+  <p>
+    <%=label_tag "Уровни сложности:" %>
+    <div id="levels">
+    </div>
+  </p>
+  <p>
+    <%=f.submit ((task_type.new_record?)?"Создать":"Сохранить"), :class=>"btn btn-success"%>
+  </p>
+<% end %>
+<%= javascript_tag do %>
+  <%= render :partial=>"task_types/form.js.erb", :locals=>{:task_type=>task_type}%>
+<% end %>

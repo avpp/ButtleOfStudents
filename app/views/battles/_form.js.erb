@@ -1,0 +1,41 @@
+$(function() {
+  task_types = task_types || {};
+  main = $("div#<%=parent_id%>");
+  p_id = "<%=parent_id%>";
+  main.empty();
+  $("<table id=\""+p_id+"_table\" class=\"table\"></table>").appendTo(main);
+  addButton = $("<a id=\""+p_id+"_addButton\" class=\"btn btn-success\">Добавить задание</a>").appendTo(main);
+  addButton.click(function(){
+    var row = $("<tr></tr>").appendTo($("table#<%=parent_id%>_table"));
+    var task_type_select = $("<select name=\"task_<%=parent_id%>[type][]\"></select>").appendTo($("<td></td>").appendTo(row));
+    for (var i in task_types) {
+      var tt = $("<option value=\""+i.toString()+"\"></option>").appendTo(task_type_select);
+      tt.html(task_types[i].name);
+    }
+    var count_input = $("<input type=\"number\" name=\"task_<%=parent_id%>[count][]\" value=\"1\" require minimum=1/>").appendTo($("<td></td>").appendTo(row));
+    var level_select = $("<select name=\"task_<%=parent_id%>[level][]\"></select>").appendTo($("<td></td>").appendTo(row));
+    task_type_select.change(function(){
+      var l_sel = $($(this).parent().next().next().children()[0]);
+      l_sel.empty();
+      var tt = task_types[$(this).val()];
+      for(var i in tt.config.levels) {
+        var l = $("<option value=\""+i.toString()+"\"></option>").appendTo(l_sel);
+        l.html(tt.config.levels[i].name);
+      }
+    });
+    task_type_select.change();
+    var del_button = $("<a class=\"btn btn-danger btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span></a>").appendTo($("<td></td>").appendTo(row));
+    del_button.click(function(){
+      $(this).parent().parent().remove();
+    });
+  });
+/*  var additional=<%= raw ( {}).to_json %>;
+  for (var k in additional) {
+    addButton.click();
+    var row = $($("table#additional").find("tr").last());
+    $(row.find("input:text[data-tag=value]")).val(additional[k]);
+    var name_input = $(row.find("input:text[data-tag=name]"));
+    name_input.val(k);
+    name_input.change();
+  }*/
+});

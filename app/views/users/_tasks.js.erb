@@ -1,0 +1,83 @@
+shown_tasks = [];
+
+function addTask(t){
+  $.post("/tasks/"+t.id, function(t_data){
+    var table = $("#available_task_list");
+    var row = $("<tr id=\"task_"+t_data.id+"\"></tr>").appendTo(table);
+    $("<font color=\""+t_data.team.color+"\"><font>").appendTo($("<td></td>").appendTo(row)).text(t_data.team.name);
+    var form = $("<form id=\"form_"+t_data.id+"\" action=\"/tasks/"+t_data.id+"/answer\" method=\"post\" data-remote=\"true\"></form>").appendTo($("<td></td>").appendTo(row));
+    form.html(t_data.html);
+    $("<span>&nbsp;&nbsp;</span>").appendTo(form);
+    $("<input type=\"submit\" value=\"Проверить\" class=\"btn btn-default\"></input>").appendTo(form);
+    form.bind("ajax:success", function(xhr, data, status) {
+      var q_form = $("#form_"+data.id);
+      q_form.find("span.glyphicon").remove();
+      if (data.success){
+        var btn = q_form.children().last()
+        $("<span class=\"glyphicon glyphicon-ok text-success\"></span>").insertBefore(btn);
+        btn.prop("disabled", true);
+      } else {
+        if (data.error) {
+          alert(data.error);
+        }
+        $("<span class=\"glyphicon glyphicon-remove text-danger\"></span>").insertBefore(q_form.children().last());
+      }
+
+    });
+    $("<td></td>").appendTo(row).text(t_data.level);
+    $("<td id=\"task_"+t_data.id+"_score\"></td>").appendTo(row);
+    $("<td id=\"task_"+t_data.id+"_team_score\"></td>").appendTo(row);
+    $("<td id=\"task_"+t_data.id+"_solvers\"></td>").appendTo(row);
+    updateTask(t_data);
+  });
+}
+function removeTask(id){
+  var table = $("#available_task_list");
+  table.find("tr#task_"+id.toString()).remove();
+}
+function updateTask(data){
+  row = $("tr#task_"+data.id);
+  row.find("td#task_"+data.id+"_score").text("+"+data.score);
+  row.find("td#task_"+data.id+"_team_score").text("+"+(data.team_score));
+  solve_cell = row.find("td#task_"+data.id+"_solvers");
+  solve_cell.empty();
+  for (i in data.solvers) {
+    $("<font color=\""+data.solvers[i].color+"\"></font>").appendTo(solve_cell).text(data.solvers[i].name)
+    if (i != data.solvers.length - 1) {
+      $("<br>").appendTo(solve_cell);
+    }
+  }
+}
+
+function update(){
+  $.post("<%=battle_tasks_list_path(@battle)%>", function(data){
+    if (!data) {
+      location.reload();
+      return;
+    }
+    var table = $("#available_task_list");
+    for (i in shown_tasks) {
+      if ($.inArray(shown_tasks[i], Object.keys(data))<0) {
+        removeTask(shown_tasks[i]);
+      }
+    }
+    for (i in data) {
+      if ($.inArray(i, shown_tasks)<0) {
+        addTask(data[i]);
+      } else {
+        updateTask(data[i])
+      }
+    }
+    shown_tasks = Object.keys(data);
+  });
+}
+
+$(function(){
+  update();
+  var my_t = $("#available_task_list");
+  my_t.powerTimer({
+    name: 'update_list',
+    sleep: 30000,
+    func: update
+  });
+});

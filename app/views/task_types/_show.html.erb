@@ -1,0 +1,24 @@
+<label>Название:&nbsp;&nbsp;&nbsp;</label><%=task_type.name%><br>
+<label>Текст:&nbsp;&nbsp;&nbsp;</label><%=task_type.text%><br>
+<label>Ответ:&nbsp;&nbsp;&nbsp;</label><%=task_type.config["answer"]%><br>
+<label>Переменные:</label><br>
+<% task_type.config["vars"].each do |vk, vv| %>
+  <%=vk%> = <%=vv%><br>
+<% end %>
+<label>Уровни сложности:</label><br>
+<ul>
+  <% task_type.config["levels"].each do |lk, lv| %>
+    <li>
+      Уровень:&nbsp;<%=lv["name"]%><br>
+      Количество баллов:&nbsp;<%=lv["score"]%><br>
+      Переменные уровня:
+      <% lv["vars"].each do |lvk, lvv| %>
+         <br><%=lvk%> = <%=lvv%>
+      <% end %>
+      <br>Пример задания:<br>
+      <%html = task_type.generate_task_for(nil, nil, lk).html%>
+      <div><%=html%></div>
+      <div><%=raw html%></div>
+    </li>
+  <% end %>
+</ul>

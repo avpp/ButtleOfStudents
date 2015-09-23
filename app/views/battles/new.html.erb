@@ -1,0 +1,27 @@
+<h3>Создание новой битвы</h3>
+<%= form_for @battle do |f| %>
+  <p>
+    <%= f.label "Название битвы:" %><br>
+    <%= f.text_field :name, :required=>true %>
+  </p>
+  <h4>Настройки квалификации</h4>
+  <div id="q_conf">
+  </div>
+  <h4>Настройка заданий команд</h4>
+  <div id="t_conf">
+  </div>
+  <h4>Настройка общих заданий</h4>
+  <div id="u_conf">
+  </div>
+  <br><br>
+  <p>
+    <%=f.submit "Создать", :class=>"btn btn-success" %>
+  </p>
+<% end %>
+
+<%= javascript_tag do%>
+  task_types = <%= answer = {}; TaskType.all.each{|tt| answer[tt.id.to_s] = tt.options}; raw answer.to_json %>;
+  <%=render :partial=>'form.js.erb', :locals=>{:parent_id=>"q_conf"}%>
+  <%=render :partial=>'form.js.erb', :locals=>{:parent_id=>"t_conf"}%>
+  <%=render :partial=>'form.js.erb', :locals=>{:parent_id=>"u_conf"}%>
+<% end %>

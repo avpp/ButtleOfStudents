@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= content_for?(:title) ? yield(:title) : "BattleOfStudents" %></title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="navbar navbar-default" role="navigation">
+        <ul class="nav navbar-nav navbar-right">
+           <li>
+             <% if not user_signed_in? %>
+               <%=link_to new_user_session_url do %>
+                 <span class="glyphicon glyphicon-log-in"></span>&nbsp; Войти
+               <% end %>
+             <% else %>
+               <%=link_to destroy_user_session_url, :method=>:delete do %>
+                 <span class="glyphicon glyphicon-log-out"></span>&nbsp; Выйти
+               <% end %>
+             <% end %>
+           </li>&nbsp;&nbsp;&nbsp;
+        </ul>
+      </div>
+    </div>
+    <div class="row">
+      <% if not notice.nil? %>
+        <p class="notice notice-success" role="alert"><%= notice %></p>
+      <% end %>
+      <% if not alert.nil? %>
+        <p class="alert alert-danger" role="alert"><%= alert %></p>
+      <% end %>
+    </div>
+    <div class="row">
+      <%= yield %>
+    </div>
+  </div>
+</body>
+</html>

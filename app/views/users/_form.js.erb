@@ -1,0 +1,34 @@
+$(function() {
+  addButton = $("a#addButton");
+  addButton.click(function(){
+    var row = $("<tr><td></td><td></td><td></td></tr>").appendTo($("table#additional"));
+    var name_input = $("<input type=\"text\" data-tag=\"name\" required maxlength=100/>").appendTo($(row.children()[0]));
+    var val_input = $("<input type=\"text\" data-tag=\"value\" maxlength=150/>").appendTo($(row.children()[1]));
+    var del_button = $("<a class=\"btn btn-danger btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span></a>").appendTo($(row.children()[2]));
+    del_button.click(function(){
+      $(this).parent().parent().remove();
+    });
+    name_input.change(function(){
+      var all_names = $($(this).parent().parent().parent()).find("input:text[data-tag=name]");
+      var count = 0;
+      for (i = 0; i < all_names.length; i++) {
+        count += ($(all_names[i]).val() == this.value)?1:0;
+      }
+      if (count > 1) {
+        this.setCustomValidity("Имя параметра должно быть уникальным");
+        return;
+      }
+      this.setCustomValidity("");
+      $($(this).parent().next().children()[0]).attr("name", "additional["+this.value+"]");
+    });
+  });
+  var additional=<%= raw (additional || {}).to_json %>;
+  for (var k in additional) {
+    addButton.click();
+    var row = $($("table#additional").find("tr").last());
+    $(row.find("input:text[data-tag=value]")).val(additional[k]);
+    var name_input = $(row.find("input:text[data-tag=name]"));
+    name_input.val(k);
+    name_input.change();
+  }
+});

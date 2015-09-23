@@ -1,0 +1,20 @@
+<table class="table">
+  <thead>
+    <th>Логин</th>
+    <th>ФИО</th>
+    <th>Роль</th>
+    <th></th>
+    <th></th>
+  </thead>
+  <tbody>
+    <% users.each do |u| %>
+      <tr>
+        <td><%=u.email%></td>
+        <td><%=u.fio%></td>
+        <td><%=Role.list[u.roles[0].name.to_sym][:name]%><td>
+        <td><%=link_to "Посмотреть", user_path(u), :class=>"btn btn-info"%></td>
+        <td><%=link_to "Удалить", user_path(u), :method=>:delete, :data=>{:confirm=>"Вы уверены, что хотите удалить польщователя " + u.email + "?"}, :class=>"btn btn-danger"%></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

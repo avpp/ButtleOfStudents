@@ -1,0 +1,32 @@
+<% show_delete = show_delete||false %>
+<% show_assign = show_assign||false %>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Название</th>
+      <th>Цвет</th>
+      <th>Количество участников</th>
+      <% if show_delete %>
+        <th></th>
+      <% end %>
+      <% if show_assign %>
+        <th></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% teams.each do |t| %>
+      <tr>
+        <td><%= link_to t.name, battle_team_path(battle, t), :class=>"btn btn-default"%></td>
+        <td bgcolor="<%=t.color%>"></td>
+        <td><%=t.students.size%>/<%=t.max_stud%></td>
+        <% if show_delete %>
+          <td><%=link_to "Удалить", battle_team_path(battle, t), :method=>:delete, :data=>{:confirm=>"Вы уверены, что хотите удалить команду?"}, :class=>"btn btn-danger"%></td>
+        <% end %>
+        <% if show_assign %>
+          <td><%=link_to "Присоединиться", battle_team_assign_path(battle, t), :method=>:post, :class=>"btn btn-success"%></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

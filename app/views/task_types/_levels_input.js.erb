@@ -1,0 +1,43 @@
+function addLevelTo(element, name, level) {
+  element = $(element);
+  level = level || {"":{"name":""}};
+  level_code = Object.keys(level)[0];
+  level = level[level_code];
+  var panel = $("<div class=\"panel panel-default\"></div>").appendTo(element);
+  var panel_h = $("<div class=\"panel-heading\"></div>").appendTo(panel);
+  var del_btn = $("<a class=\"btn btn-danger btn-xs\"></a>").appendTo($("<span class=\"pull-right\"></span>").appendTo(panel_h));
+  $("<span class=\"glyphicon glyphicon-remove\"></span>").appendTo(del_btn);
+  $("<h5></h5>").appendTo(panel_h).text(level_code);
+  del_btn.click(function(){
+    $(this).parent().parent().parent().remove();
+  });
+  var panel_b = $("<div class=\"panel-body\"></div>").appendTo(panel);
+  panel_b.data("name", name+"["+level_code+"]");
+  $("<label>Название уровня:&nbsp;&nbsp;</label>").appendTo(panel_b);
+  $("<input type=\"text\" name=\""+panel_b.data("name")+"[name]\" required></input>").appendTo(panel_b).val(level["name"]);
+  $("<br><label>Количество очков:&nbsp;&nbsp;</label>").appendTo(panel_b);
+  $("<input type=\"number\" name=\""+panel_b.data("name")+"[score]\" min=\"1\" required></input>").appendTo(panel_b).val(level["score"]|| 1);
+  $("<br><label>Перменные уровня:&nbsp;&nbsp;</label>").appendTo(panel_b);
+  var level_vars = $("<div></div>").appendTo(panel_b);
+  init_vars_input(level_vars, panel_b.data("name")+"[vars]", level["vars"] || {});
+}
+
+function init_levels(element, name, levels){
+  element = $(element);
+  element.empty();
+  var levels_container = $("<div id=\"levels_container\"></div>").appendTo(element);
+  $("<a data-name=\""+name+"\" class=\"btn btn-success\">Добавить уровень сложности</a>").appendTo(element).click(function(){
+    var code = prompt("Введите код уровня");
+    if (code == null || code == "") {
+      return;
+    }
+    l = {};
+    l[code] = {"name":""};
+    addLevelTo($(this).parent().find("div#levels_container"), name, l);
+  });
+  for (var i in levels) {
+    var l = {};
+    l[i] = levels[i];
+    addLevelTo(levels_container, name, l);
+  }
+}

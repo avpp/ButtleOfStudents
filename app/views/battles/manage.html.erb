@@ -1,0 +1,6 @@
+<h3>Управление битвой <%=@battle.name%></h3>
+<div>
+  <%= link_to "Добавить команду", new_battle_team_path(@battle), :class=>"btn btn-success" %><br><br>
+  <%=render :partial=>'teams/index', :locals=>{:teams=>@battle.teams, :show_delete=>true, :battle=>@battle}%>
+  
+</div>

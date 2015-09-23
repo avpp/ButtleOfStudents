@@ -1,0 +1,32 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Название</th>
+      <th>Начало</th>
+      <th>Конец</th>
+      <th>Создатель</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% battles.each do |b| %>
+      <tr>
+        <td><%= link_to(b.name, battle_path(b), :class=>"btn btn-default")%></td>
+        <td><%=b.start_time%></td>
+        <td><%=b.end_time%></td>
+        <td><%=b.owner.fio%></td>
+        <td>
+          <% if not signed_in? %>
+          <% elsif current_user.has_role?(:student) and b.end_time.nil? %>
+            <%= link_to("Присоединиться", battle_assign_path(b), :method=>:post, :class=>"btn btn-success") %>
+          <% elsif current_user.has_role?(:teacher)%>
+            <% if b.end_time.nil? %>
+              <%= link_to("Остановить", battle_stop_path(b), :method=>:post, :data=>{:confirm=>"Вы уверены, что хотите остановить битву"}, :class=>"btn btn-warning") %>
+              &nbsp; &nbsp; &nbsp;
+            <% end %>
+            <%= link_to("Удалить", battle_path(b), :method=>:delete, :data=>{:confirm=>"Вы уверены, что хотите удалить битву?"}, :class=>"btn btn-danger") %>
+          <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

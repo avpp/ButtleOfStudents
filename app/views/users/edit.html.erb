@@ -1,0 +1,11 @@
+<% content_for :title, "Редактирование пользователя"%>
+<h2>Логин: <%=@user.email%></h2>
+<p><%= link_to "Сбросить пароль", reset_user_password_path(@user), :class=>"btn btn-warning"%></p>
+
+<%= form_for @user, url: user_path(@user) do |f| %>
+  <%= render :partial=>"form.html.erb", :locals=>{:user=>@user} %>
+  <p>
+    <%= link_to "Отменить", :back, :class=>" btn btn-default" %> &nbsp; &nbsp;
+    <%= f.submit :value=>"Изменить", :class=>"btn btn-success" %>
+  </p>
+<% end %>

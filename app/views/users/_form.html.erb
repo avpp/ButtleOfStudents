@@ -1,0 +1,44 @@
+  <% info = user.info  %>
+  <% personal = info.nil? ? {} : info.include?("personal") ? info["personal"] : {} %>
+  <% additional = info.nil? ? {} : info.include?("additional") ? info["additional"] : {} %>
+  <% roles = user.roles.map{|r| r.name} || [] %>
+
+
+<h3>Персональные данные</h3>
+<p>
+  <h4>Основные:</h4>
+  <p>
+    <%= label_tag "personal[surname]", "Фамилия:" %><br>
+    <%= text_field_tag "personal[surname]", personal["surname"], :required=>true %>
+  </p>
+  <p>
+    <%= label_tag "personal[name]", "Имя:" %><br>
+    <%= text_field_tag "personal[name]", personal["name"], :required=>true %>
+  </p>
+  <p>
+    <%= label_tag "personal[patronymic]", "Отчество:" %><br>
+    <%= text_field_tag "personal[patronymic]", personal["patronymic"], :required=>true %>
+  </p>
+</p>
+<p>
+  <h4>Пользовательские</h4>
+  <div>
+    <p>
+      <table id="additional">
+      </table>
+    </p>
+    <p>
+      <a id="addButton" class="btn btn-default">Добавить</a>
+    </p>
+  </div>
+</p>
+
+<p>
+  <%= label_tag "roles[]", "Список доступных ролей:" %><br>
+  <% Role.list.each do |rk, rv| %>
+    <%= check_box_tag "roles[]", rk, roles.include?(rk.to_s), {:multiple=>true} %> <%=rv[:name]%><br>
+  <% end %>
+</p>
+<%= javascript_tag do %>
+  <%=render  :partial=>'form.js.erb', :locals=>{:additional=>additional} %>
+<% end %>
