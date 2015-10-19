@@ -1,0 +1,23 @@
+<h1>Список пользователей:</h1>
+<div>
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#stud_users" role="tab" data-toggle="tab">Студенты</a></li>
+    <% if current_user.has_role? :admin %>
+    <li role="presentation"><a href="#other_users" role="tab" data-toggle="tab">Не студенты</a></li>
+    <% end %>
+  </ul>
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="stud_users">
+      <br>
+      <p><%= link_to "Создать нового студента", new_user_path(:student=>true), :class=>"btn btn-success" %></p>
+      <%=render :partial=>"index", :locals=>{:users=>@studU}%>
+    </div>
+    <% if current_user.has_role? :admin %>
+    <div role="tabpanel" class="tab-pane" id="other_users">
+      <br>
+      <p><%= link_to "Создать нового пользователя", new_user_path, :class=>"btn btn-success" %></p>
+      <%=render :partial=>"index", :locals=>{:users=>@otherU}%>
+    </div>
+    <% end %>
+  </div>
+</div>

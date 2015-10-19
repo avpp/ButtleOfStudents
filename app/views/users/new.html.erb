@@ -11,7 +11,7 @@
     </div>
   <% end %>
   <p>
-    <%= f.label "E-mail:"%><br>
+    <%= f.label "Логин:"%><br>
     <%= f.text_field :email %>
   </p>
   <p>
@@ -22,7 +22,7 @@
     <%= f.label "Подтверждение пароля:"%><br>
     <%= f.password_field :password_confirmation %>
   </p>
-  <%= render :partial=>'form.html.erb', :locals=>{:user=>@user} %>
+  <%= render :partial=>'form.html.erb', :locals=>{:user=>@user, :create_student=>(params.include?("student"))} %>
   <p>
     <%= link_to "Отменить", :back, :class=>" btn btn-default" %> &nbsp; &nbsp;
     <%= f.submit :value=>"Создать", :class=>"btn btn-success"%>

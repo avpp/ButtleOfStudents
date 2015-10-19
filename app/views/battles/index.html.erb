@@ -1,0 +1,8 @@
+<div>
+  <%= link_to "Создать новую битву", new_battle_path, :class=>"btn btn-success" if current_user.has_role? :teacher%>
+</div>
+<div>
+  <label>Список созданных битв</label>
+  <%= render :partial=>'battles/index.html.erb', :locals=>{:battles=>((current_user.has_role? :teacher)? current_user.battles.order(:start_time, :end_time) : Battle.where(:end_time=>nil).order(:start_time))} %>
+</div>
+

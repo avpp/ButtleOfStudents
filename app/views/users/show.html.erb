@@ -2,13 +2,6 @@
 <% if current_user == @user %>
   <h3>Приветствую, <%=current_user.fio%></h3>
   <% if current_user.has_role?(:admin) %>
-    <div>
-      <%= link_to "Создать нового пользователя", new_user_path, :class=>"btn btn-success"%>
-    </div>
-    <div>
-      <label>Список существующих пользователей:</label><br>
-      <%= render :partial=>'index', :locals=>{:users=>User.where.not(:id=>current_user.id).all} %>
-    </div>
   <% elsif current_user.has_role?(:task_manager)%>
     <div>
       <%= link_to "Создать новый тип задания", new_task_type_path, :class=>"btn btn-success"%>
@@ -18,17 +11,10 @@
       <%= render :partial=>'task_types/index.html.erb', :locals=>{:task_types=>TaskType.all.order(:id)}%>
     </div>
   <% elsif current_user.has_role?(:teacher)%>
-    <div>
-      <%= link_to "Создать новую битву", new_battle_path, :class=>"btn btn-success"%>
-    </div>
-    <div>
-      <label>Список созданных битв</label>
-      <%= render :partial=>'battles/index.html.erb', :locals=>{:battles=>@user.battles.order(:start_time, :end_time)} %>
-    </div>
   <% elsif current_user.has_role?(:student)%>
     <div>
       <label>Список доступных битв:</label>
-      <%= render :partial=>'battles/index.html.erb', :locals=>{:battles=>Battle.where(:end_time=>nil).order(:start_time)} %>
+      <%= render :partial=>'battles/index.html.erb', :locals=>{:battles=>Battle.where(:end_time=>nil).where("(only_my_student=false) or (only_my_student=true and user_id=?)", current_user.chef).order(:start_time)} %>
       <label>Список завершённых битв:</label>
       <%= render :partial=>'battles/index.html.erb', :locals=>{:battles=>current_user.in_battles.where.not(:end_time=>nil).order(:start_time, :end_time)} %>
     </div>
@@ -36,7 +22,7 @@
 <% else %>
   <h3>Страница пользователя <%= @user.fio %></h3>
   <p><%= link_to "Редактировать", edit_user_path(@user), :class=>"btn btn-warning" %></p>
-  <% if current_user.has_role?(:admin) %>
-    <p><%= link_to "К списку пользователей", root_path, :class=>"btn btn-default" %></p>
+  <% if current_user.has_role?(:admin) or current_user.has_role?(:teacher) %>
+    <p><%= link_to "К списку пользователей", users_path, :class=>"btn btn-default" %></p>
   <% end %>
 <% end %>

@@ -2,6 +2,7 @@
   <% personal = info.nil? ? {} : info.include?("personal") ? info["personal"] : {} %>
   <% additional = info.nil? ? {} : info.include?("additional") ? info["additional"] : {} %>
   <% roles = user.roles.map{|r| r.name} || [] %>
+  <% create_student = create_student || false %>
 
 
 <h3>Персональные данные</h3>
@@ -34,9 +35,14 @@
 </p>
 
 <p>
-  <%= label_tag "roles[]", "Список доступных ролей:" %><br>
-  <% Role.list.each do |rk, rv| %>
-    <%= check_box_tag "roles[]", rk, roles.include?(rk.to_s), {:multiple=>true} %> <%=rv[:name]%><br>
+  <% if current_user.has_role?(:admin) and (not create_student) %>
+    <%= label_tag "roles[]", "Список доступных ролей:" %><br>
+    <% Role.list.each do |rk, rv| %>
+      <% next if rk.to_s == "student" %>
+      <%= check_box_tag "roles[]", rk, roles.include?(rk.to_s), {:multiple=>true} %> <%=rv[:name]%><br>
+    <% end %>
+  <% else %>
+    <%= hidden_field_tag "roles[]", "student" %>
   <% end %>
 </p>
 <%= javascript_tag do %>

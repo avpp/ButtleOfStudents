@@ -5,10 +5,14 @@ class BattlesController < ApplicationController
   end
 
   access_control do
-    allow :teacher, :to=>[:new, :create]
+    allow :admin, :to=>[:index, :show, :manage, :stop]
+    allow :teacher, :to=>[:new, :create, :index]
     allow :teacher, :to=>[:manage, :stop, :destroy], :if=>:is_my?
     allow :student, :to=>[:assign]
     allow all, :to=>[:show, :team_raiting, :person_raiting]
+  end
+
+  def index
   end
 
   def new
@@ -24,7 +28,7 @@ class BattlesController < ApplicationController
     return ans
   end
   def create
-    @battle = Battle.new(params.require(:battle).permit(:name))
+    @battle = Battle.new(params.require(:battle).permit(:name, :only_my_student))
     @battle.config = {}
     @battle.config["q_conf"] = parse(params[:task_q_conf]);
     @battle.config["t_conf"] = parse(params[:task_t_conf]);
@@ -40,19 +44,19 @@ class BattlesController < ApplicationController
         end
       end
     end
-    redirect_to :root
+    redirect_to battles_path
   end
   def destroy
     @battle = Battle.find(params[:id])
     @battle.destroy
-    redirect_to :root
+    redirect_to battles_path
   end
 
   def stop
     @battle = Battle.find(params[:battle_id])
     @battle.end_time = Time.now
     @battle.save
-    redirect_to :root
+    redirect_to battles_path
   end
 
   def assign

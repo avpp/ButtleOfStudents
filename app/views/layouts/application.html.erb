@@ -10,7 +10,15 @@
   <div class="container">
     <div class="row">
       <div class="navbar navbar-default" role="navigation">
+        <% if user_signed_in? %>
+          <ul class="nav navbar-nav">
+            <%= render :partial=>"users/menu.html.erb" %>
+          </ul>
+        <% end %>
         <ul class="nav navbar-nav navbar-right">
+           <% if user_signed_in? %>
+           <li> <span class="navbar-text"> <%= current_user.fio %> [ <%= current_user.roles_names.join("; ")%> ] </span> </li>
+           <% end %>
            <li>
              <% if not user_signed_in? %>
                <%=link_to new_user_session_url do %>

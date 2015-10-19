@@ -4,6 +4,10 @@
     <%= f.label "Название битвы:" %><br>
     <%= f.text_field :name, :required=>true %>
   </p>
+  <p>
+    Только для моих студентов:
+    <%= f.check_box :only_my_student%>
+  </p>
   <h4>Настройки квалификации</h4>
   <div id="q_conf">
   </div>

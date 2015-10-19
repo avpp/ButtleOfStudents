@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable, :rememberable, :trackable #, :validatable
   acts_as_authorization_subject  :association_name => :roles
 
   store :info, accessors: [:personal, :additional, :score_cache], coder: JSON
@@ -13,10 +13,20 @@ class User < ActiveRecord::Base
   has_many :tasks
   has_many :answers
   has_many :answered_tasks, :through=>:answers, :source=>:task
+  belongs_to :chef, :class_name => "User"
+  has_many :students, :class_name => "User", :foreign_key => "chef_id"
 
   def fio
     return "" if self.info[:personal].nil? or self.info[:personal].empty?
     return self.info[:personal][:surname].to_s + " " + self.info[:personal][:name].to_s + " " + self.info[:personal][:patronymic].to_s
+  end
+
+  def roles_names
+    names = []
+    self.roles.each do |r|
+      names << (Role.list[r.name.to_sym][:name])
+    end
+    return names
   end
 
   def get_team_coef_for_battle(battle)

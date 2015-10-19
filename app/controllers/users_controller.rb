@@ -3,14 +3,34 @@ class UsersController < ApplicationController
   def is_my?
     return current_user == User.find(params[:id])
   end
+  def is_my_student?
+    return User.find(params[:id]).chef == current_user
+  end
+  def is_try_create_only_student?
+    return ((not params[:roles].nil?) and (params[:roles].size == 1) and (params[:roles][0] == "student"))
+  end
   
   access_control do
-    allow :admin, :to=>[:new, :edit, :create, :update, :destroy, :reset_password, :update_password, :show]
+    allow :admin, :to=>[:new, :edit, :create, :update, :destroy, :reset_password, :update_password, :show, :index]
+    allow :teacher, :to=>[:new, :index]
+    allow :teacher, :to=>[:create], :if=>:is_try_create_only_student?
+    allow :teacher, :to=>[:edit, :update, :destroy, :reset_password, :update_password, :show], :if=>:is_my_student?
     allow logged_in, :to=>[:show], :if=>:is_my?
+  end
+
+  def index
+    @otherU = (current_user.has_role? :admin)? (User.where(:id=>User.joins(:roles).where.not(:roles=>{:name=>"student"}).map {|x| x.id} || []).where.not(:id=>current_user.id)): []
+    @studU = User.where(:id=>User.joins(:roles).where(:roles=>{:name=>"student"}).map {|x| x.id} || [])
+    @studU = @studU.where(:chef_id=>current_user.id) if current_user.has_role? :teacher
   end
 
   def show
     @user = User.find(params[:id])
+    if current_user == @user
+      (redirect_to users_path; return) if current_user.has_role?(:admin)
+      (redirect_to users_path; return) if current_user.has_role?(:teacher)
+      
+    end
     if @user.has_role?(:student)
       @battle = @user.in_battles.where(:end_time=>nil).first
       return if @battle.nil?
@@ -25,6 +45,7 @@ class UsersController < ApplicationController
         render 'users/student_battle_t.html.erb'
       end
     end
+    
   end
 
   def new
@@ -69,6 +90,10 @@ class UsersController < ApplicationController
     if @user.save
       params["roles"].each do |r|
         @user.has_role!(r.to_sym)
+      end
+      if @user.has_role? :student and current_user.has_role? :teacher
+        @user.chef = current_user
+        @user.save!
       end
       redirect_to @user
     else
