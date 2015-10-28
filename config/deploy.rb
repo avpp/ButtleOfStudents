@@ -5,7 +5,7 @@ lock '3.4.0'
 # Project configuration options
 # ------------------------------
 
-set :application,    'battleOfStudents'
+set :application,    'battle'
 set :login,          'avpp'
 set :user,           'hosting_avpp'
 
