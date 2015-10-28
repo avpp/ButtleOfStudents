@@ -43,3 +43,5 @@ gem 'anjlab-bootstrap-rails', :require => 'bootstrap-rails',
 gem 'devise'
 gem 'acl9', :require => 'acl9', :github => 'be9/acl9'
 gem 'hirb-unicode', group: [:development, :test]
+
+gem 'capistrano', group: [:development]
