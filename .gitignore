@@ -20,3 +20,4 @@
 
 .locum
 /config/database.yml
+/config/secrets.yml
